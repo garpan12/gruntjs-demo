@@ -15,54 +15,17 @@ module.exports = function(grunt) {
             },
             
             build: {
-                src: 'src/<%= pkg.name %>.js',
-                dest: 'build/<%= pkg.name %>.min.js'
+                src: 'src/js/<%= pkg.name %>.js',
+                dest: 'src/js/<%= pkg.name %>.min.js'
             }
         },
         
-        qunit: {
-            // location of the test runner files
-            all_tests: ['test/*{1,2}.html']
-            /*individual_tests: {
-                files: [
-                    {src: 'test/*1.html'},
-                    {src: 'test/*{1,2}.html'},
-                ]
-            },
-            urls: {
-                options: {
-                    urls: [
-                        'http://localhost:9000/test/test1.html',
-                        'http://localhost:9001/test2.html',
-                    ]
-                },
-            },
-            urls_and_files: {
-                options: {
-                    urls: '<%= qunit,urls.options.urls %>',
-                },
-                src: 'test/*{1,2}.html',
-            },*/
-        },
-        
-        jshint: {
-            files: ['Gruntfile.js', 'src/**/*.js', 'test/**/*.js'],
-            options: {
-                globals: {
-                    jQuery: true,
-                    console: true,
-                    module: true,
-                    document: true
-                }
-            }
-        },
-        
-        // create task to start a local web server
-        connect: {
-            root_server: {
-                options: {
-                    port: 9000,
-                    base: '.',
+            // Create a local web server for testing http:// URIs.
+            connect: {
+                root_server: {
+                    options: {
+                        port: 9000,
+                        base: '.',
                 },
             },
             test_server: {
@@ -71,18 +34,44 @@ module.exports = function(grunt) {
                     base: 'test',
                 },
             }
+        },
+
+        // Unit tests.
+        qunit: {
+            all_tests: ['test/*{1,2}.html'],
+            individual_tests: {
+                files: [
+                    {src: 'test/*1.html'},
+                    {src: 'test/*{1,2}.html'},
+                ]
+            },
+            urls: {
+                options: {
+                    urls: [
+                        'http://localhost:9000/test/qunit1.html',
+                        'http://localhost:9001/qunit2.html',
+                  ]
+                },
+            },
+            urls_and_files: {
+                options: {
+                    urls: '<%= qunit.urls.options.urls %>',
+                },
+                src: 'test/*{1,2}.html',
+            },
         }
     });
     
-    var sucesses = {};
+    var successes = {};
     var currentUrl;
-    grunt.event.on('qunit.span', function(url) {
+    grunt.event.on('qunit.spawn', function(url) {
         currentUrl = url;
-        if(!sucesses[currentUrl]) { sucesses[currentUrl] = 0; }
+        if (!successes[currentUrl]) { successes[currentUrl] = 0; }
     });
     grunt.event.on('qunit.done', function(failed, passed) {
-        if(failed === 0 && passed === 2) { sucesses[currentUrl]++; }
+        if (failed === 0 && passed === 2) { successes[currentUrl]++; }
     });
+
     
     // load the plugin
     grunt.loadNpmTasks('grunt-contrib-uglify');
@@ -95,36 +84,34 @@ module.exports = function(grunt) {
     
     // let default grunt build do all the things in the config
     grunt.registerTask('default', ['qunit', 'uglify']);
+    
     // uglify task
     grunt.registerTask('uglify', 'uglify', function() {
         grunt.log.write('Uglifying the project...').ok();
     });
 
-    grunt.registerTask('do-tests', 'check if tests worked', function() {
-        grunt.log.write('Checking the QUnit tests...\n');
-        
+      grunt.registerTask('do-tests', 'Test to see if qunit task actually worked.', function() {
         var assert = require('assert');
-        //var difflet = require('difflet')({indent: 2, comment: true});
-        var actual = sucesses;
+        var difflet = require('difflet')({indent: 2, comment: true});
+        var actual = successes;
         var expected = {
-          'test/test1.html': 3,
-          'test/test2.html': 3,
-          'http://localhost:9000/test/test1.html': 2,
-          'http://localhost:9001/test2.html': 2
+          'test/qunit1.html': 3,
+          'test/qunit2.html': 3,
+          'http://localhost:9000/test/qunit1.html': 2,
+          'http://localhost:9001/qunit2.html': 2
         };
         try {
           assert.deepEqual(actual, expected, 'Actual should match expected.');
-        }
-        catch(err) {
+        } catch (err) {
           grunt.log.subhead('Actual should match expected.');
-          //console.log(difflet.compare(expected, actual));
+          console.log(difflet.compare(expected, actual));
           throw new Error(err.message);
         }
-       
-    });
+      });
+
     
     // QUnit task
-    grunt.registerTask('unit-test', ['qunit']);
+    grunt.registerTask('unit-test', ['connect', 'qunit', 'do-tests']);
         
     // JSHint task
     grunt.registerTask('jshint', 'jshint', function() {
