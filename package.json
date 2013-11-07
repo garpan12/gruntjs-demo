@@ -1,9 +1,9 @@
 {
-  "name": "grunt_project",
-  "version": "1.0.0",
-  "description": "Example of a grunt project",
+  "name": "gruntjs-demo",
+  "version": "0.1.0",
+  "description": "EECE 416 Grunt JS demo",
   "devDependencies": {
-    "grunt": "latest",
+    "grunt": "~0.4.1",
     "grunt-contrib-jshint": "~0.7.1",
     "grunt-contrib-jasmine": "~0.5.2",
     "grunt-contrib-less": "~0.8.1",
