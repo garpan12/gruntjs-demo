@@ -1,0 +1,12 @@
+{
+  "name": "grunt_project",
+  "version": "1.0.0",
+  "description": "Example of a grunt project",
+  "devDependencies": {
+    "grunt": "latest",
+    "grunt-contrib-jshint": "~0.7.1",
+    "grunt-contrib-jasmine": "~0.5.2",
+    "grunt-contrib-less": "~0.8.1",
+    "grunt-cli": "~0.1.10"
+  }
+}
