@@ -22,8 +22,8 @@ module.exports = function(grunt) {
         
         qunit: {
             // location of the test runner files
-            all_tests: ['test/*{1,2}.html'],
-            individual_tests: {
+            all_tests: ['test/*{1,2}.html']
+            /*individual_tests: {
                 files: [
                     {src: 'test/*1.html'},
                     {src: 'test/*{1,2}.html'},
@@ -42,7 +42,7 @@ module.exports = function(grunt) {
                     urls: '<%= qunit,urls.options.urls %>',
                 },
                 src: 'test/*{1,2}.html',
-            },
+            },*/
         },
         
         jshint: {
@@ -61,7 +61,7 @@ module.exports = function(grunt) {
         connect: {
             root_server: {
                 options: {
-                    por: 9000,
+                    port: 9000,
                     base: '.',
                 },
             },
@@ -81,7 +81,7 @@ module.exports = function(grunt) {
         if(!sucesses[currentUrl]) { sucesses[currentUrl] = 0; }
     });
     grunt.event.on('qunit.done', function(failed, passed) {
-        if(failed === 0 && passed === 2) { successes[currentUrl]++; }
+        if(failed === 0 && passed === 2) { sucesses[currentUrl]++; }
     });
     
     // load the plugin
@@ -124,7 +124,7 @@ module.exports = function(grunt) {
     });
     
     // QUnit task
-    grunt.registerTask('qunit', ['connect', 'qunit', 'do-tests']);
+    grunt.registerTask('unit-test', ['qunit']);
         
     // JSHint task
     grunt.registerTask('jshint', 'jshint', function() {
