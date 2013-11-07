@@ -20,13 +20,29 @@ module.exports = function(grunt) {
             }
         },
         
-        jasmine: {
-            
-        },
-        
         qunit: {
             // location of the test runner files
-            files: ['test/**/*.html']
+            all_tests: ['test/*{1,2}.html'],
+            individual_tests: {
+                files: [
+                    {src: 'test/*1.html'},
+                    {src: 'test/*{1,2}.html'},
+                ]
+            },
+            urls: {
+                options: {
+                    urls: [
+                        'http://localhost:9000/test/test1.html',
+                        'http://localhost:9001/test2.html',
+                    ]
+                },
+            },
+            urls_and_files: {
+                options: {
+                    urls: '<%= qunit,urls.options.urls %>',
+                },
+                src: 'test/*{1,2}.html',
+            },
         },
         
         jshint: {
@@ -41,17 +57,39 @@ module.exports = function(grunt) {
             }
         },
         
-        mocha: {
-            all: ['test/**/*.html']
+        // create task to start a local web server
+        connect: {
+            root_server: {
+                options: {
+                    por: 9000,
+                    base: '.',
+                },
+            },
+            test_server: {
+                options: {
+                    port: 9001,
+                    base: 'test',
+                },
+            }
         }
+    });
+    
+    var sucesses = {};
+    var currentUrl;
+    grunt.event.on('qunit.span', function(url) {
+        currentUrl = url;
+        if(!sucesses[currentUrl]) { sucesses[currentUrl] = 0; }
+    });
+    grunt.event.on('qunit.done', function(failed, passed) {
+        if(failed === 0 && passed === 2) { successes[currentUrl]++; }
     });
     
     // load the plugin
     grunt.loadNpmTasks('grunt-contrib-uglify');
-    grunt.loadNpmTasks('grunt-contrib-jasmine');
     grunt.loadNpmTasks('grunt-contrib-qunit');
     grunt.loadNpmTasks('grunt-contrib-jshint');
-    grunt.loadNpmTasks('grunt-mocha');
+    grunt.loadNpmTasks('grunt-contrib-connect');
+    grunt.loadNpmTasks('grunt-contrib-internal');
     
     // set the tasks alias
     
@@ -61,18 +99,36 @@ module.exports = function(grunt) {
     grunt.registerTask('uglify', 'uglify', function() {
         grunt.log.write('Uglifying the project...').ok();
     });
-    // jasmine task
-    grunt.registerTask('jasmine', 'jasmine', function() {
-        grunt.log.write('Checking the Jasmine tests...').ok();
+
+    grunt.registerTask('do-tests', 'check if tests worked', function() {
+        grunt.log.write('Checking the QUnit tests...\n');
+        
+        var assert = require('assert');
+        //var difflet = require('difflet')({indent: 2, comment: true});
+        var actual = sucesses;
+        var expected = {
+          'test/test1.html': 3,
+          'test/test2.html': 3,
+          'http://localhost:9000/test/test1.html': 2,
+          'http://localhost:9001/test2.html': 2
+        };
+        try {
+          assert.deepEqual(actual, expected, 'Actual should match expected.');
+        }
+        catch(err) {
+          grunt.log.subhead('Actual should match expected.');
+          //console.log(difflet.compare(expected, actual));
+          throw new Error(err.message);
+        }
+       
     });
+    
     // QUnit task
-    grunt.registerTask('qunit', 'qunit', function() {
-        grunt.log.write('Checking the QUnit tests...').ok();
-    });
+    grunt.registerTask('qunit', ['connect', 'qunit', 'do-tests']);
+        
     // JSHint task
     grunt.registerTask('jshint', 'jshint', function() {
         grunt.log.write('Validating against JSHint...').ok();
     });
-    // Mocha task
-    grunt.registerTask('mocha', 'mocha');
+
 };
