@@ -78,12 +78,13 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-qunit');
     grunt.loadNpmTasks('grunt-contrib-jshint');
     grunt.loadNpmTasks('grunt-contrib-connect');
+    grunt.loadNpmTasks('grunt-contrib-jasmine');
     grunt.loadNpmTasks('grunt-contrib-internal');
     
     // set the tasks alias
     
     // let default grunt build do all the things in the config
-    grunt.registerTask('default', ['qunit', 'uglify']);
+    grunt.registerTask('default', ['unit-test', 'uglify']);
     
     // uglify task
     grunt.registerTask('uglify', 'uglify', function() {
