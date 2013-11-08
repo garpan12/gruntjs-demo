@@ -4,4 +4,5 @@ test('hello', function() {
     button.click();
     var popover = jQuery("div#q1-popover");
     equal(popover.html(), "What Programming Language is Grunt in?", "DOM accessed");
+    button.click();
 });
