@@ -14,14 +14,8 @@ module.exports = function(grunt) {
         },
         // creating the uglify task
         uglify: {
-            // override the default options
-            options: {
-                banner: '/*! <%= pkg.name %> <%= grunt.template.today("yyy-mm-dd") %> */\n'
-            },
-            
-            build: {
-                src: 'src/js/index.js',
-                dest: 'src/js/index.min.js'
+            dev : {
+                files: {"src/js/index.min.js" : "src/js/index.js" }
             }
         },
         
@@ -90,12 +84,9 @@ module.exports = function(grunt) {
     // set the tasks alias
     
     // let default grunt build do all the things in the config
-    grunt.registerTask('default', ['unit-test', 'uglify']);
+    grunt.registerTask('default', ['unit-test', 'uglify', 'less']);
     
     // uglify task
-    grunt.registerTask('uglify', 'uglify', function() {
-        grunt.log.write('Uglifying the project...').ok();
-    });
 
       grunt.registerTask('do-tests', 'Test to see if qunit task actually worked.', function() {
         var assert = require('assert');
