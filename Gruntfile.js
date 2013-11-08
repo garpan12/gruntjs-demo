@@ -6,17 +6,25 @@ module.exports = function(grunt) {
     
         // this is the package file that we are going to use
         pkg: grunt.file.readJSON('package.json'),
+ 
+        // configuring the uglify task
+        uglify: {
+            dev : {
+                files: {"src/js/index.min.js" : "src/js/index.js" }
+            }
+        },
         
+        // configuring the less task
         less: {
             dev : {
                 files: {"src/css/bootstrap.css" : "less/bootstrap.less" }
             }
         },
-        // creating the uglify task
-        uglify: {
-            dev : {
-                files: {"src/js/index.min.js" : "src/js/index.js" }
-            }
+
+        // configuring the jsHint task
+        jshint: {
+            all: ['src/js/index.js']
+
         },
         
             // Create a local web server for testing http:// URIs.
@@ -119,11 +127,6 @@ module.exports = function(grunt) {
 
     
     // QUnit task
-    grunt.registerTask('unit-test', ['connect', 'qunit', 'do-tests']);
-        
-    // JSHint task
-    grunt.registerTask('jshint', 'jshint', function() {
-        grunt.log.write('Validating against JSHint...').ok();
-    });
+    grunt.registerTask('unit-test', ['connect', 'qunit', 'jshint', 'do-tests']);
 
 };
