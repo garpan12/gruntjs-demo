@@ -32,16 +32,23 @@ module.exports = function(grunt) {
                     port: 9001,
                     base: 'test',
                 },
+            },
+	    index_test_server: {
+                options: {
+                    port: 9002,
+                    base: '.',
+                },
             }
         },
 
         // Unit tests.
         qunit: {
-            all_tests: ['test/*{1,2}.html'],
+            all_tests: ['test/*.html', 'index.html'],
             individual_tests: {
                 files: [
                     {src: 'test/*1.html'},
-                    {src: 'test/*{1,2}.html'},
+                    {src: 'test/*2.html'},
+		            {src: 'index.html'},
                 ]
             },
             urls: {
@@ -49,6 +56,7 @@ module.exports = function(grunt) {
                     urls: [
                         'http://localhost:9000/test/qunit1.html',
                         'http://localhost:9001/qunit2.html',
+			            'http://localhost:9002/index.html',
                   ]
                 },
             },
@@ -56,7 +64,7 @@ module.exports = function(grunt) {
                 options: {
                     urls: '<%= qunit.urls.options.urls %>',
                 },
-                src: 'test/*{1,2}.html',
+                src: ['test/*{1,2}.html', 'index.html'],
             },
         }
     });
@@ -68,7 +76,7 @@ module.exports = function(grunt) {
         if (!successes[currentUrl]) { successes[currentUrl] = 0; }
     });
     grunt.event.on('qunit.done', function(failed, passed) {
-        if (failed === 0 && passed === 2) { successes[currentUrl]++; }
+        if (failed === 0 && (passed === 2 || passed === 1)) { successes[currentUrl]++; }
     });
 
     
@@ -95,8 +103,10 @@ module.exports = function(grunt) {
         var expected = {
           'test/qunit1.html': 3,
           'test/qunit2.html': 3,
+          'index.html': 3,
           'http://localhost:9000/test/qunit1.html': 2,
-          'http://localhost:9001/qunit2.html': 2
+          'http://localhost:9001/qunit2.html': 2,
+          'http://localhost:9002/index.html': 2
         };
         try {
           assert.deepEqual(actual, expected, 'Actual should match expected.');

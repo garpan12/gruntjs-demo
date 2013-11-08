@@ -1,20 +1,27 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
+        <meta charset="utf-8">
         <link href="src/css/bootstrap.css" media="all" rel="stylesheet" type="text/css">
         <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
         <script src="src/js/bootstrap.js" type="text/javascript"></script>
+        <link rel="stylesheet" href="test/libs/qunit.css" media="screen">
+        <script src="test/libs/qunit.js"></script>
+        
+        <script src="test/demo.js" type="text/javascript"></script>        
     </head>
     <body>
         <div class="container">
             <div class="row">
                <h1>Grunt JS Demo</h1>
             </div>
+            <div id="qunit"></div>
             <div class="row">
                     <button type="button" id="example" class="btn btn-default"  rel="popover">hello</button>
-                    <button type="button" id="example2" class="btn btn-default"  rel="popover">hello</button>
+                    <button type="button" id="example2" class="btn btn-default"  rel="popover">bye</button>
             </div>
         </div>
-        <script src="index.js" type="text/javascript"></script>
+        <script src="src/js/index.js" type="text/javascript"></script>
+
     </body>
 </html>
