@@ -7,6 +7,11 @@ module.exports = function(grunt) {
         // this is the package file that we are going to use
         pkg: grunt.file.readJSON('package.json'),
         
+        less: {
+            dev : {
+                files: {"src/css/bootstrap.css" : "less/bootstrap.less" }
+            }
+        },
         // creating the uglify task
         uglify: {
             // override the default options
@@ -15,8 +20,8 @@ module.exports = function(grunt) {
             },
             
             build: {
-                src: 'src/js/<%= pkg.name %>.js',
-                dest: 'src/js/<%= pkg.name %>.min.js'
+                src: 'src/js/index.js',
+                dest: 'src/js/index.min.js'
             }
         },
         
@@ -80,6 +85,7 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-connect');
     grunt.loadNpmTasks('grunt-contrib-jasmine');
     grunt.loadNpmTasks('grunt-contrib-internal');
+    grunt.loadNpmTasks('grunt-contrib-less');
     
     // set the tasks alias
     
