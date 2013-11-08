@@ -84,7 +84,7 @@ module.exports = function(grunt) {
     // set the tasks alias
     
     // let default grunt build do all the things in the config
-    grunt.registerTask('default', ['unit-test', 'uglify', 'less']);
+    grunt.registerTask('default', [ 'uglify', 'less', 'unit-test']);
     
     // uglify task
 
